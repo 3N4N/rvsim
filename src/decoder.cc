@@ -17,7 +17,7 @@ void
 Instruction::print()
 {
   puts("format\tmnemonic\topcode\trd\trs1\trs2\tfunct3\timm");
-  printf("%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\n",
+  printf("%s\t%s\t\t%d\t%d\t%d\t%d\t%d\t0x%x\n",
       _format_map[format].c_str(),
       _mnemonic_map[mnemonic].c_str(),
       opcode, rd, rs1, rs2, funct3, imm);
