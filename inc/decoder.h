@@ -37,7 +37,7 @@ struct Instruction {
 };
 
 
-Instruction decode(const std::string&);
+Instruction decode(const uint32_t);
 
 
 #endif  // _DECODER_H_

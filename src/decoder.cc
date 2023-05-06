@@ -80,24 +80,18 @@ const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
 };
 
 Instruction
-decode(const string& __instr)
+decode(const uint32_t _instr)
 {
   // TODO:
-  // * test instr is hexstring
   // * verify/test imm calculation
-
-  stringstream ss;
-  ss << hex << __instr;
-  uint32_t _instr;
-  ss >> _instr;
 
   uint8_t     opcode(0), rd(0), rs1(0), rs2(0), funct3(0), funct7(0);
   uint32_t    imm(0);
   mnemonic_t  mnemonic;
   format_t    format;
 
-  opcode      = _instr & 127;
-  format      = format_map.at(opcode);
+  opcode          = _instr & 127;
+  format          = format_map.at(opcode);
   switch(format) {
     case R:
       rd          = (_instr >> RDOFFSET)  & REGMAX;

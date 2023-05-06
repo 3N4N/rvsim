@@ -17,16 +17,16 @@ main(int argc, char **argv)
 {
   puts("Hello world");
 
-  string instrs[] = {
-    "fe010113",
-    "02010413",
-    "fef42623",
-    "00000793",
-    "02010113",
+  uint32_t instrs[] = {
+    0xfe010113,
+    0x02010413,
+    0xfef42623,
+    0x00000793,
+    0x02010113,
   };
 
   for (size_t i = 0; i < sizeof(instrs) / sizeof(instrs[0]); ++i) {
-    printf("Decoding %s\n", instrs[i].c_str());
+    printf("Decoding %u\n", instrs[i]);
     Instruction instr = decode(instrs[i]);
     instr.print();
   }
