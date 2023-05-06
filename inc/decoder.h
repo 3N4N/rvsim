@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 
 typedef enum {
   ADD, SUB, ADDI, AND, OR, XOR, ANDI, ORI, XORI, BEQ, LW, SW, SLL, SLLI, SRL,
@@ -10,7 +11,7 @@ typedef enum {
 } mnemonic_t;
 
 typedef enum {
-  R, I, S, B, U, UJ,
+  R, I, S, B, U, J,
 } format_t;
 
 struct Instruction {
@@ -24,8 +25,12 @@ struct Instruction {
   format_t    format;
   uint32_t    imm;
 
-  std::string get_format();
   void print();
+
+private:
+  std::unordered_map<format_t, std::string> format_map {
+    {R, "R"}, {I, "I"}, {S, "S"}, {B, "B"}, {U, "U"}, {J, "J"},
+  };
 };
 
 

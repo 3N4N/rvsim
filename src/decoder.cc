@@ -3,33 +3,12 @@
 
 using namespace std;
 
-string
-Instruction::get_format()
-{
-  stringstream ss;
-  switch(format) {
-    case R:
-      ss << "R"; break;
-    case I:
-      ss << "I"; break;
-    case S:
-      ss << "S"; break;
-    case B:
-      ss << "B"; break;
-    case U:
-      ss << "U"; break;
-    case UJ:
-      ss << "J"; break;
-  }
-  return ss.str();
-}
-
 void
 Instruction::print()
 {
   puts("format\topcode\trd\trs1\trs2\tfunct3\tfunct7\timm");
   printf("%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
-      get_format().c_str(), opcode, rd, rs1, rs2, funct3, funct7, imm);
+      format_map[format].c_str(), opcode, rd, rs1, rs2, funct3, funct7, imm);
 }
 
 Instruction
