@@ -16,8 +16,20 @@ int
 main(int argc, char **argv)
 {
   puts("Hello world");
-  Instruction instr = decode("fe010113");
-  instr.print();
+
+  string instrs[] = {
+    "fe010113",
+    "02010413",
+    "fef42623",
+    "00000793",
+    "02010113",
+  };
+
+  for (size_t i = 0; i < sizeof(instrs) / sizeof(instrs[0]); ++i) {
+    printf("Decoding %s\n", instrs[i].c_str());
+    Instruction instr = decode(instrs[i]);
+    instr.print();
+  }
 
   return 0;
 }
