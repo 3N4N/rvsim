@@ -15,24 +15,31 @@ typedef enum {
 } format_t;
 
 struct Instruction {
-  uint8_t     opcode;
-  uint8_t     rd;
-  uint8_t     rs1;
-  uint8_t     rs2;
-  uint8_t     funct3;
-  uint8_t     funct7;
-  uint32_t    imm;
-  mnemonic_t  mnemonic;
-  format_t    format;
+  const uint8_t     opcode;
+  const uint8_t     rd;
+  const uint8_t     rs1;
+  const uint8_t     rs2;
+  const uint8_t     funct3;
+  const uint8_t     funct7;
+  const uint32_t    imm;
+  const mnemonic_t  mnemonic;
+  const format_t    format;
 
-  Instruction() : opcode(0), rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0) {}
+  Instruction(
+      uint8_t _opcode, uint8_t _rd, uint8_t _rs1, uint8_t _rs2,
+      uint8_t _funct3, uint8_t _funct7, uint32_t _imm,
+      mnemonic_t _mnemonic, format_t _format) :
+    opcode(_opcode), rd(_rd), rs1(_rs1), rs2(_rs2),
+    funct3(_funct3), funct7(_funct7), imm(_imm),
+    mnemonic(_mnemonic), format(_format)
+    {}
   void print();
 
 private:
-  std::unordered_map<format_t, std::string> _format_map {
+  const std::unordered_map<format_t, std::string> _format_map {
     {R, "R"}, {I, "I"}, {S, "S"}, {B, "B"}, {U, "U"}, {J, "J"},
   };
-  std::unordered_map<mnemonic_t, std::string> _mnemonic_map {
+  const std::unordered_map<mnemonic_t, std::string> _mnemonic_map {
     { ADD,  "ADD" },
     { SUB,  "SUB" },
     { ADDI, "ADDI" },

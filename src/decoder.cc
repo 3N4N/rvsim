@@ -18,12 +18,12 @@ Instruction::print()
 {
   puts("format\tmnemonic\topcode\trd\trs1\trs2\tfunct3\timm");
   printf("%s\t%s\t\t%d\t%d\t%d\t%d\t%d\t0x%x\n",
-      _format_map[format].c_str(),
-      _mnemonic_map[mnemonic].c_str(),
+      _format_map.at(format).c_str(),
+      _mnemonic_map.at(mnemonic).c_str(),
       opcode, rd, rs1, rs2, funct3, imm);
 }
 
-unordered_map<uint8_t, format_t> format_map {
+const unordered_map<uint8_t, format_t> format_map {
   { 0b0110011, R },
   { 0b0010011, I },
   { 0b1100011, B },
@@ -31,7 +31,7 @@ unordered_map<uint8_t, format_t> format_map {
   { 0b0100011, S },
 };
 
-unordered_map<uint32_t, mnemonic_t> mnemonic_map {
+const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
   // { (f7<<10 | f3<<7 | opcode), mnemonic }
   // Opcode         f3         f7
   { (0b0110011 | (0x0<<7) | (0x00<<10)),  ADD },
@@ -64,49 +64,53 @@ decode(const string& __instr)
   uint32_t _instr;
   ss >> _instr;
 
-  Instruction instr;
-  instr.opcode      = _instr & 127;
-  instr.format      = format_map[instr.opcode];
+  uint8_t     opcode(0), rd(0), rs1(0), rs2(0), funct3(0), funct7(0);
+  uint32_t    imm(0);
+  mnemonic_t  mnemonic;
+  format_t    format;
 
-  switch(instr.format) {
+  opcode      = _instr & 127;
+  format      = format_map.at(opcode);
+
+  switch(format) {
     case R:
-      instr.rd          = (_instr >> RDOFFSET)  & REGMAX;
-      instr.rs1         = (_instr >> RS1OFFSET) & REGMAX;
-      instr.rs2         = (_instr >> RS2OFFSET) & REGMAX;
-      instr.funct3      = (_instr >> F3OFFSET) & F3MAX;
-      instr.funct7      = (_instr >> F7OFFSET) & F7MAX;
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      rs2         = (_instr >> RS2OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      funct7      = (_instr >> F7OFFSET) & F7MAX;
       break;
     case I:
-      instr.rd          = (_instr >> RDOFFSET)  & REGMAX;
-      instr.rs1         = (_instr >> RS1OFFSET) & REGMAX;
-      instr.funct3      = (_instr >> F3OFFSET) & F3MAX;
-      instr.imm         = (_instr >> RS2OFFSET) & 4095;
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      imm         = (_instr >> RS2OFFSET) & 4095;
       break;
     case S:
-      instr.rs1         = (_instr >> RS1OFFSET) & REGMAX;
-      instr.rs2         = (_instr >> RS2OFFSET) & REGMAX;
-      instr.funct3      = (_instr >> F3OFFSET) & F3MAX;
-      instr.imm         = ((_instr >> RDOFFSET) & REGMAX) |
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      rs2         = (_instr >> RS2OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      imm         = ((_instr >> RDOFFSET) & REGMAX) |
                           (((_instr >> F7OFFSET) & F7MAX) << 5);
       break;
     case B:
-      instr.rs1         = (_instr >> RS1OFFSET) & REGMAX;
-      instr.rs2         = (_instr >> RS2OFFSET) & REGMAX;
-      instr.funct3      = (_instr >> F3OFFSET) & F3MAX;
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      rs2         = (_instr >> RS2OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
       // TODO: check imm calculation
-      instr.imm         = ((_instr >> (31 - 12)) & (1 << 12)) |
+      imm         = ((_instr >> (31 - 12)) & (1 << 12)) |
                           ((_instr >> (25 - 5)) & 0x7e0) |
                           ((_instr >> (8 - 1)) & 0x1e) |
                           ((_instr << (11 - 7)) & (1 << 11));
-      instr.imm = (instr.imm << 19) >> 19;
+      imm = (imm << 19) >> 19;
 
       break;
     case U:
-      instr.rd          = (_instr >> RDOFFSET)  & REGMAX;
-      instr.imm         = (_instr >> F3OFFSET) << 12;
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      imm         = (_instr >> F3OFFSET) << 12;
       break;
     case J:
-      instr.rd          = (_instr >> RDOFFSET)  & REGMAX;
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
       // TODO: calculate imm
       break;
     default:
@@ -114,11 +118,9 @@ decode(const string& __instr)
       break;
   }
 
-  instr.mnemonic    = mnemonic_map[
-    instr.opcode | (instr.funct3<<7) | (instr.funct7<<10)
-  ];
+  mnemonic = mnemonic_map.at(opcode | (funct3<<7) | (funct7<<10));
 
-  // instr.print();
+  Instruction instr(opcode, rd, rs1, rs2, funct3, funct7, imm, mnemonic, format);
 
   return instr;
 }
