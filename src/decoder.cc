@@ -1,79 +1,127 @@
 #include "decoder.h"
 #include <sstream>
+#include <unordered_map>
 
 using namespace std;
 
-string
-Instruction::get_format()
-{
-  stringstream ss;
-  switch(format) {
-    case R:
-      ss << "R"; break;
-    case I:
-      ss << "I"; break;
-    case S:
-      ss << "S"; break;
-    case B:
-      ss << "B"; break;
-    case U:
-      ss << "U"; break;
-    case UJ:
-      ss << "J"; break;
-  }
-  return ss.str();
-}
+#define RDOFFSET  7
+#define RS1OFFSET 15
+#define RS2OFFSET 20
+#define F3OFFSET  12
+#define F7OFFSET  25
+#define REGMAX  31
+#define F3MAX   7   // 2 ^ (14-12+1)  - 1
+#define F7MAX   127 // 2 ^ (31-25+1)  - 1
 
 void
 Instruction::print()
 {
-  puts("format\topcode\trd\trs1\trs2\tfunct3\tfunct7\timm");
-  printf("%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
-      get_format().c_str(), opcode, rd, rs1, rs2, funct3, funct7, imm);
+  puts("format\tmnemonic\topcode\trd\trs1\trs2\tfunct3\timm");
+  printf("%s\t%s\t\t%d\t%d\t%d\t%d\t%d\t0x%x\n",
+      _format_map.at(format).c_str(),
+      _mnemonic_map.at(mnemonic).c_str(),
+      opcode, rd, rs1, rs2, funct3, imm);
 }
+
+const unordered_map<uint8_t, format_t> format_map {
+  { 0b0110011, R },
+  { 0b0010011, I },
+  { 0b1100011, B },
+  { 0b0000011, I },
+  { 0b0100011, S },
+};
+
+const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
+  // { (f7<<10 | f3<<7 | opcode), mnemonic }
+  // Opcode         f3         f7
+  { (0b0110011 | (0x0<<7) | (0x00<<10)),  ADD },
+  { (0b0110011 | (0x0<<7) | (0x20<<10)),  SUB },
+  { (0b0110011 | (0x4<<7) | (0x00<<10)),  XOR },
+  { (0b0110011 | (0x6<<7) | (0x00<<10)),  OR },
+  { (0b0110011 | (0x7<<7) | (0x00<<10)),  AND },
+  { (0b0110011 | (0x1<<7) | (0x00<<10)),  SLL },
+  { (0b0110011 | (0x5<<7) | (0x00<<10)),  SRL },
+  { (0b0110011 | (0x5<<7) | (0x20<<10)),  SRA },
+  { (0b0010011 | (0x0<<7)),  ADDI },
+  { (0b0010011 | (0x4<<7)),  XORI },
+  { (0b0010011 | (0x6<<7)),  ORI },
+  { (0b0010011 | (0x7<<7)),  ANDI },
+  { (0b0010011 | (0x1<<7) | (0x00<<10)),  SLLI },
+  { (0b0010011 | (0x5<<7) | (0x00<<10)),  SRLI },
+  { (0b0010011 | (0x5<<7) | (0x20<<10)),  SRAI },
+  { (0b0000011 | (0x2<<7)),  LW },
+  { (0b0100011 | (0x2<<7)),  SW },
+  { (0b1100011 | (0x0<<7)),  BEQ },
+};
 
 Instruction
 decode(const string& __instr)
 {
-  // TODO: test instr is hexstring
+  // TODO:
+  // * test instr is hexstring
+  // * verify/test imm calculation
 
   stringstream ss;
   ss << hex << __instr;
   uint32_t _instr;
   ss >> _instr;
 
-  Instruction instr;
-  instr.opcode  = _instr & 127;
-  instr.rd      = (_instr >> 7)  & 31;
-  instr.rs1     = (_instr >> 15) & 31;
-  instr.rs2     = (_instr >> 20) & 31;
-  instr.funct3  = (_instr >> 12) & 7;
+  uint8_t     opcode(0), rd(0), rs1(0), rs2(0), funct3(0), funct7(0);
+  uint32_t    imm(0);
+  mnemonic_t  mnemonic;
+  format_t    format;
 
-  // instr.print();
-
-  // https://inst.eecs.berkeley.edu/~cs250/fa11/handouts/riscv-spec.pdf
-  switch(instr.opcode) {
-    case 0b0110011:
-      instr.format = R;
-      // add sub xor or and sll srl sra slt sltu
+  opcode      = _instr & 127;
+  format      = format_map.at(opcode);
+  switch(format) {
+    case R:
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      rs2         = (_instr >> RS2OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      funct7      = (_instr >> F7OFFSET) & F7MAX;
       break;
-    case 0b0010011:
-      // addi xori ori andi slli srli srai slti sltiu
-      instr.format = I;
+    case I:
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      imm         = (_instr >> RS2OFFSET) & 4095;
       break;
-    case 0b1100011:
-      // beq bne blt bge bltu bgeu
-      instr.format = B;
+    case S:
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      rs2         = (_instr >> RS2OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      imm         = ((_instr >> RDOFFSET) & REGMAX) |
+                    (((_instr >> F7OFFSET) & F7MAX) << 5);
       break;
-    case 0b0000011:
-      // lb lh lw lbu lhu
-      instr.format = I;
+    case B:
+      rs1         = (_instr >> RS1OFFSET) & REGMAX;
+      rs2         = (_instr >> RS2OFFSET) & REGMAX;
+      funct3      = (_instr >> F3OFFSET) & F3MAX;
+      imm         = (((_instr >> 31) & 0x1) << 12) |
+                    (((_instr >> 25) & 0x3f) << 5) |
+                    (((_instr >> 7) & 0x1) << 11) |
+                    (((_instr >> 8) & 0xf) << 1);
       break;
-    case 0b0100011:
-      // sb sh sw
-      instr.format = S;
+    case U:
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      imm         = (_instr >> F3OFFSET) << 12;
+      break;
+    case J:
+      rd          = (_instr >> RDOFFSET)  & REGMAX;
+      imm         = (((_instr >> 12) & 0xff) << 12) |
+                    (((_instr >> 20) & 0x1) << 11) |
+                    (((_instr >> 21) & 0x3ff) << 1) |
+                    (((_instr >> 31) & 0x1) << 20);
+      break;
+    default:
+      puts("[ERR] This should not be possible to reach!");
       break;
   }
+
+  mnemonic = mnemonic_map.at(opcode | (funct3<<7) | (funct7<<10));
+
+  Instruction instr(opcode, rd, rs1, rs2, funct3, funct7, imm, mnemonic, format);
 
   return instr;
 }
