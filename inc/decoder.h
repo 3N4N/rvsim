@@ -34,31 +34,6 @@ struct Instruction {
     mnemonic(_mnemonic), format(_format)
     {}
   void print();
-
-private:
-  const std::unordered_map<format_t, std::string> _format_map {
-    {R, "R"}, {I, "I"}, {S, "S"}, {B, "B"}, {U, "U"}, {J, "J"},
-  };
-  const std::unordered_map<mnemonic_t, std::string> _mnemonic_map {
-    { ADD,  "ADD" },
-    { SUB,  "SUB" },
-    { ADDI, "ADDI" },
-    { AND,  "AND" },
-    { OR,   "OR" },
-    { XOR,  "XOR" },
-    { ANDI, "ANDI" },
-    { ORI,  "ORI" },
-    { XORI, "XORI" },
-    { BEQ,  "BEQ" },
-    { LW,   "LW" },
-    { SW,   "SW" },
-    { SLL,  "SLL" },
-    { SLLI, "SLLI" },
-    { SRL,  "SRL" },
-    { SRLI, "SRLI" },
-    { SRA,  "SRA" },
-    { SRAI, "SRAI" },
-  };
 };
 
 
