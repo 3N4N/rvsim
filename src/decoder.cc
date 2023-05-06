@@ -57,7 +57,9 @@ const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
 Instruction
 decode(const string& __instr)
 {
-  // TODO: test instr is hexstring
+  // TODO:
+  // * test instr is hexstring
+  // * verify/test imm calculation
 
   stringstream ss;
   ss << hex << __instr;
@@ -71,7 +73,6 @@ decode(const string& __instr)
 
   opcode      = _instr & 127;
   format      = format_map.at(opcode);
-
   switch(format) {
     case R:
       rd          = (_instr >> RDOFFSET)  & REGMAX;
@@ -91,19 +92,16 @@ decode(const string& __instr)
       rs2         = (_instr >> RS2OFFSET) & REGMAX;
       funct3      = (_instr >> F3OFFSET) & F3MAX;
       imm         = ((_instr >> RDOFFSET) & REGMAX) |
-                          (((_instr >> F7OFFSET) & F7MAX) << 5);
+                    (((_instr >> F7OFFSET) & F7MAX) << 5);
       break;
     case B:
       rs1         = (_instr >> RS1OFFSET) & REGMAX;
       rs2         = (_instr >> RS2OFFSET) & REGMAX;
       funct3      = (_instr >> F3OFFSET) & F3MAX;
-      // TODO: check imm calculation
-      imm         = ((_instr >> (31 - 12)) & (1 << 12)) |
-                          ((_instr >> (25 - 5)) & 0x7e0) |
-                          ((_instr >> (8 - 1)) & 0x1e) |
-                          ((_instr << (11 - 7)) & (1 << 11));
-      imm = (imm << 19) >> 19;
-
+      imm         = (((_instr >> 31) & 0x1) << 12) |
+                    (((_instr >> 25) & 0x3f) << 5) |
+                    (((_instr >> 7) & 0x1) << 11) |
+                    (((_instr >> 8) & 0xf) << 1);
       break;
     case U:
       rd          = (_instr >> RDOFFSET)  & REGMAX;
@@ -111,7 +109,10 @@ decode(const string& __instr)
       break;
     case J:
       rd          = (_instr >> RDOFFSET)  & REGMAX;
-      // TODO: calculate imm
+      imm         = (((_instr >> 12) & 0xff) << 12) |
+                    (((_instr >> 20) & 0x1) << 11) |
+                    (((_instr >> 21) & 0x3ff) << 1) |
+                    (((_instr >> 31) & 0x1) << 20);
       break;
     default:
       puts("[ERR] This should not be possible to reach!");
