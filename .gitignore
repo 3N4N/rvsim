@@ -1,8 +1,11 @@
 bin/
-scratch.txt
+objs/
 rvsim.exe
+rvsim
 
 *.vim
 .cache/
+.gdb_history
 compile_commands.json
 tags
+scratch.txt
