@@ -24,4 +24,3 @@ objs/%.o : src/%.cc
 
 clean:
 	rm -rf objs *~ $(EXE)
-

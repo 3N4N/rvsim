@@ -23,4 +23,3 @@ objs/%.o : tests/%.cc
 
 clean:
 	rm -rf objs bin *~ $(EXES)
-
