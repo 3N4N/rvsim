@@ -1,11 +1,11 @@
 CXX         = c++
-CXXFLAGS    = -g -Wall -std=c++17 -Iinc/
+CXXFLAGS    = -g -Wall -std=c++17 -Iinclude/
 LIBS        =
 
 SRCS   = $(wildcard src/*.cc)
-OBJS   = $(patsubst src/%.cc,bin/%.o,$(SRCS))
+OBJS   = $(patsubst src/%.cc,objs/%.o,$(SRCS))
 DEPS   = $(OBJS:.o:=.d)
-DIRS   = src inc bin
+DIRS   = src include objs
 EXE    = rvsim
 
 all: $(DIRS) $(EXE)
@@ -14,14 +14,14 @@ $(DIRS):
 	mkdir -p $@
 
 $(EXE): $(OBJS)
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) $(LIBS) $^ -o $@
 
-bin/%.o : src/%.cc
-	$(CXX) -o $@ $(CXXFLAGS) -c $<
+objs/%.o : src/%.cc include/%.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-bin/%.o : src/%.cc inc/%.h
-	$(CXX) -o $@ $(CXXFLAGS) -c $<
+objs/%.o : src/%.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf bin *~ $(EXE)
+	rm -rf objs *~ $(EXE)
 
