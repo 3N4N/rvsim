@@ -45,7 +45,7 @@ const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
 };
 
 Instruction
-decode(const uint32_t _instr)
+decode(const instr_t _instr)
 {
   // TODO:
   // * verify/test imm calculation

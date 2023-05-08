@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+using instr_t = uint32_t;
+
 typedef enum {
   ADD, SUB, ADDI, AND, OR, XOR, ANDI, ORI, XORI, BEQ, LW, SW, SLL, SLLI, SRL,
   SRLI, SRA, SRAI,
