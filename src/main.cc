@@ -1,12 +1,11 @@
 #include <iostream>
-#include "decoder.h"
 
 using namespace std;
 
 int
 main(int argc, char **argv)
 {
-  puts("Hello world");
+  puts("This is RISC-V");
 
   return 0;
 }

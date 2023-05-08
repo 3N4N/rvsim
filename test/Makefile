@@ -3,8 +3,7 @@ CXXFLAGS    = -g -Wall -std=c++17 -Iinclude/ -I../include
 LIBS        =
 
 TESTS       = $(wildcard tests/*.cc)
-OBJS        = $(patsubst tests/%.cc,objs/%.o,$(TESTS))
-OBJS       := $(OBJS) $(wildcard ../objs/*.o)
+OBJS        = $(wildcard ../objs/*.o)
 OBJS       := $(filter-out ../objs/main.o, $(OBJS))
 DEPS        = $(OBJS:.o:=.d)
 EXES        = $(patsubst tests/%.cc,bin/%,$(TESTS))
@@ -15,7 +14,10 @@ all: $(DIRS) $(EXES)
 $(DIRS):
 	mkdir -p $@
 
-$(EXES): $(OBJS)
+bin/test_decode: objs/test_decode.o $(OBJS)
+	$(CXX) $(LIBS) $^ -o $@
+
+bin/test_alu: objs/test_alu.o $(OBJS)
 	$(CXX) $(LIBS) $^ -o $@
 
 objs/%.o : tests/%.cc
