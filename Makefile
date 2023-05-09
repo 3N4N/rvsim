@@ -1,10 +1,10 @@
 CXX         = c++
-CXXFLAGS    = -g -Wall -std=c++17 -Iinclude/
+CXXFLAGS    = -g -Wall -std=c++17 -Iinclude/ -MP -MMD
 LIBS        =
 
 SRCS   = $(wildcard src/*.cc)
 OBJS   = $(patsubst src/%.cc,objs/%.o,$(SRCS))
-DEPS   = $(OBJS:.o:=.d)
+DEPS   = $(OBJS:.o=.d)
 DIRS   = src include objs
 EXE    = rvsim
 
@@ -24,3 +24,5 @@ objs/%.o : src/%.cc
 
 clean:
 	rm -rf objs *~ $(EXE)
+
+-include $(DEPS)
