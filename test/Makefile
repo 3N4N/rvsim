@@ -14,10 +14,7 @@ all: $(DIRS) $(EXES)
 $(DIRS):
 	mkdir -p $@
 
-bin/test_decode: objs/test_decode.o $(OBJS)
-	$(CXX) $(LIBS) $^ -o $@
-
-bin/test_alu: objs/test_alu.o $(OBJS)
+bin/%: objs/%.o $(OBJS)
 	$(CXX) $(LIBS) $^ -o $@
 
 objs/%.o : tests/%.cc
