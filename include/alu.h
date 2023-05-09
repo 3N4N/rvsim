@@ -17,6 +17,6 @@ enum alu_op_t {
 };
 
 
-uint32_t alu(reg_t rd1, reg_t rd2, alu_op_t aluop);
+uint32_t alu(uint32_t rd1, uint32_t rd2, alu_op_t aluop);
 
 #endif  // _ALU_H_
