@@ -3,20 +3,11 @@
 
 #include "util.h"
 
-enum alu_op_t {
-  ALU_ADD,
-  ALU_SUB,
-  ALU_XOR,
-  ALU_OR,
-  ALU_AND,
-  ALU_SLL,
-  ALU_SRL,
-  ALU_SRA,
-  ALU_SLT,
-  ALU_SLTU,
-};
-
-
-uint32_t alu(uint32_t rd1, uint32_t rd2, alu_op_t aluop);
+/// ALU
+///
+/// Param 'aluop' is a 4-bit binary string consisting of
+/// the 5th bit of funct7 in its MSB and 3 bits of funct3
+/// Use: (funct7>>2) | funct3
+uint32_t alu(uint32_t rd1, uint32_t rd2, uint8_t aluop);
 
 #endif  // _ALU_H_

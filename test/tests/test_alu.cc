@@ -29,26 +29,13 @@ main(int argc, char **argv)
       0x402a54b3,   // sra  x9, x20, x2
   };
 
-  const static std::unordered_map<uint8_t, alu_op_t> alu_op_map {
-    { 0b0000, ALU_ADD },
-    { 0b1000, ALU_SUB },
-    { 0b0100, ALU_XOR },
-    { 0b0110, ALU_OR },
-    { 0b0111, ALU_AND },
-    { 0b0001, ALU_SLL },
-    { 0b0101, ALU_SRL },
-    { 0b1101, ALU_SRA },
-    { 0b0010, ALU_SLT },
-    { 0b0011, ALU_SLTU },
-  };
-
   for (auto _instr: instrs) {
     Instruction instr = decode(_instr);
     instr.print();
     uint32_t rd1 = regfile[instr.rs1];
     uint32_t rd2 = regfile[instr.rs2];
     regfile[instr.rd] = alu(rd1, instr.format == I ? instr.imm : rd2,
-                            alu_op_map.at((instr.funct7>>2) | instr.funct3));
+                            (instr.funct7>>2) | instr.funct3);
     for (size_t i = 0; i < 32/8; ++i) {
       for (int j = 0; j < 8; ++j) {
         printf("\t%d", static_cast<int32_t>(regfile[i*8+j]));
