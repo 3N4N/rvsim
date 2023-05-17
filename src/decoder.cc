@@ -22,8 +22,8 @@ const unordered_map<uint8_t, format_t> format_map {
 };
 
 const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
-  // { (f7<<10 | f3<<7 | opcode), mnemonic }
-  // Opcode         f3         f7
+  /* { (f7<<10 | f3<<7 | opcode), mnemonic } */
+  /* Opcode         f3         f7 */
   { (0b0110011 | (0x0<<7) | (0x00<<10)),  ADD },
   { (0b0110011 | (0x0<<7) | (0x20<<10)),  SUB },
   { (0b0110011 | (0x4<<7) | (0x00<<10)),  XOR },
@@ -47,8 +47,8 @@ const unordered_map<uint32_t, mnemonic_t> mnemonic_map {
 Instruction
 decode(const instr_t _instr)
 {
-  // TODO:
-  // * verify/test imm calculation
+  /* TODO: */
+  /* - verify/test imm calculation */
 
   uint8_t     opcode(0), rd(0), rs1(0), rs2(0), funct3(0), funct7(0);
   uint32_t    imm(0);
