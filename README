@@ -1,0 +1,69 @@
+RVSIM
+=====
+
+This is a 32-bit risc-v emulator.
+
+
+Build Instructions
+------------------
+
+    make
+    ./rvsim
+
+
+Unit Tests
+----------
+
+'test/' directory contains unit tests.  The idea is to test each unit of the
+datapath in isolation to prevent regression.  There is only one root makefile,
+which will build all .cc filesin 'test/test/' directory.  The naming convention
+of the test cpp files is 'test_{unit}.cc'.  So if the unit to test is decoder,
+the test filename will be 'test_decoder.cc'
+
+    make -C test/
+    ./test/bin/test_decoder
+
+
+Contribution Guidelines
+-----------------------
+
+Please follow these guidelines.
+  - Use .cc for source extension
+  - Use "include guards" in headers
+  - Don't leave trailing whitespaces
+  - Don't leave empty lines at the end of files
+  - Use your editor to write git commit messages
+    Don't do «git commit -m 'message'».  Instead, just do «git commit», and
+    it'll bring up your default text editor.  You can write your commit message
+    on it, and when you close it, it will be commited.
+  - Divide up the git commit message in two parts:
+    - A single title line: limited to 60 characters
+      Must be an imperative, not a statement or report.  That is, say "Add new
+      feature," instead of "Added new feature."
+    - Multiline description
+      This is the part where you explain life, the universe, and everything.
+      You can use multiple paragraphs even.
+
+To reiterate, a git commit message should look like this:
+
+  <type>[optional scope]: <description>
+
+  [optional body]
+
+  [optional footer(s)]
+
+Where <type> is one of these:
+  - feat: when the commit introduces a new feature
+    E.g. "feat(alu): add support for beq instruction"
+  - fix: when the commit fixes a bug
+    E.g. "fix(alu): wrong register calculation"
+  - refactor: when the commit refactors code, but changes no functionality
+    E.g. "refactor(alu): use array for mapping instead of hashmap"
+  - test: when the commit concerns unit tests
+    E.g. "test(alu): add test for alu" or "test(alu): fix test for alu"
+  - chore: when the commit does something of little interest
+    E.g., "chore: fix indentation" or "chore: remove extra newlines"
+
+For an example of a git commit that your future self will thank you for, see
+commit 4c54967: «git log -1 4c54967», or see it on github:
+https://github.com/DSInnovators/rvsim-alpha/commit/4c549676961bad90bbab42ec20aab6d3c1fc3bba
