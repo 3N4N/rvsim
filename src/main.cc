@@ -4,6 +4,7 @@
 #include "util.h"
 #include "instruction.h"
 #include "decoder.h"
+#include "control.h"
 #include "alu.h"
 
 using namespace std;
@@ -48,13 +49,23 @@ main(int argc, char **argv)
 
   dump_regs();
   for (auto _instr: instrs) {
+    /* ID Stage */
     Instruction instr = decode(_instr);
     instr.print();
+
+    Control ctrl(instr.opcode);
     uint32_t rd1 = regfile[instr.rs1];
     uint32_t rd2 = regfile[instr.rs2];
-    regfile[instr.rd] = alu(rd1, instr.format == I ? instr.imm : rd2,
-                            (instr.funct7>>2) | instr.funct3);
+
+    /* EX stage */
+    uint32_t result = alu(rd1, instr.format == I ? instr.imm : rd2,
+        (instr.funct7>>2) | instr.funct3);
     dump_regs();
+
+    /* TODO: MEM stage */
+
+    /* WB stage */
+    regfile[instr.rd] = result;
   }
 
   return 0;
