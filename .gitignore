@@ -1,5 +1,5 @@
 bin/
-objs/
+obj/
 rvsim.exe
 rvsim
 
