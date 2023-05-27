@@ -9,10 +9,6 @@ Control::Control(uint8_t opcode)
       { 0b0000011,   0b11110000 },    // LD
       { 0b0100011,   0b10001000 },    // SD
       { 0b1100011,   0b00000101 },    // Branch
-      { 0b1101111,   0b00100111 },    // jal
-      { 0b1100111,   0b00100110 },    // jalr
-      { 0b0110111,   0b10100011 },    // lui
-      { 0b0010111,   0b10100011 },    // auipc
   };
 
   uint8_t ctrl_bits = opcode_ctrl_map.at(opcode);

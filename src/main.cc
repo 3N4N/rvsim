@@ -49,7 +49,7 @@ main(int argc, char **argv)
 
   dump_regs();
   for (auto _instr: instrs) {
-    /* ID Stage */
+    // ID Stage
     Instruction instr = decode(_instr);
     instr.print();
 
@@ -57,15 +57,15 @@ main(int argc, char **argv)
     uint32_t rd1 = regfile[instr.rs1];
     uint32_t rd2 = regfile[instr.rs2];
 
-    /* EX stage */
-    uint32_t result = alu(rd1, instr.format == I ? instr.imm : rd2,
-        (instr.funct7>>2) | instr.funct3);
-    dump_regs();
+    // EX stage
+    uint8_t   alu_ctrl  = get_alu_ctrl(ctrl.alu_op, instr.funct3, instr.funct7);
+    uint32_t  result    = alu(rd1, instr.format == I ? instr.imm : rd2, alu_ctrl);
 
-    /* TODO: MEM stage */
+    // TODO: MEM stage
 
-    /* WB stage */
+    // WB stage
     regfile[instr.rd] = result;
+    dump_regs();
   }
 
   return 0;
