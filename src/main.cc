@@ -49,22 +49,46 @@ main(int argc, char **argv)
 
   dump_regs();
   for (auto _instr: instrs) {
-    // ID Stage
+    uint32_t        rd1, rd2;
+    uint8_t         alu_ctrl;
+    uint32_t        alu_out;
+    uint32_t        ram_data;
+
+    // -- ID Stage ---------------------------------------------------------------
+
     Instruction instr = decode(_instr);
     instr.print();
 
     Control ctrl(instr.opcode);
-    uint32_t rd1 = regfile[instr.rs1];
-    uint32_t rd2 = regfile[instr.rs2];
+    rd1 = regfile[instr.rs1];
+    rd2 = regfile[instr.rs2];
 
-    // EX stage
-    uint8_t   alu_ctrl  = get_alu_ctrl(ctrl.alu_op, instr.funct3, instr.funct7);
-    uint32_t  result    = alu(rd1, instr.format == I ? instr.imm : rd2, alu_ctrl);
 
-    // TODO: MEM stage
+    // -- EX stage ---------------------------------------------------------------
 
-    // WB stage
-    regfile[instr.rd] = result;
+    alu_ctrl  = get_alu_ctrl(ctrl.alu_op, instr.funct3, instr.funct7);
+    alu_out   = alu(rd1, ctrl.alu_src ? instr.imm : rd2, alu_ctrl);
+
+
+    // -- MEM stage --------------------------------------------------------------
+
+    if (ctrl.mem_read) {
+      // todo: read ram at addr into ram_data
+    } else {
+      ram_data = 0;
+    }
+
+    if (ctrl.mem_write) {
+      // todo: write rd2 to ram at alu_out
+    }
+
+
+    // -- WB stage ---------------------------------------------------------------
+
+    if (ctrl.reg_write) {
+      regfile[instr.rd] = ctrl.mem_to_reg ? ram_data : alu_out;
+    }
+
     dump_regs();
   }
 
