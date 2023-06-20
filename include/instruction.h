@@ -14,7 +14,7 @@ typedef enum {
   R, I, S, B, U, J,
 } format_t;
 
-struct Instruction {
+class Instruction {
   const uint8_t     opcode;
   const uint8_t     rd;
   const uint8_t     rs1;

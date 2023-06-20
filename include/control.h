@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-struct Control {
+class Control {
   bool    alu_src;
   bool    mem_to_reg;
   bool    reg_write;
