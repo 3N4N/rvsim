@@ -4,6 +4,7 @@
 #include <cstdint>
 
 class Control {
+public:
   bool    alu_src;
   bool    mem_to_reg;
   bool    reg_write;

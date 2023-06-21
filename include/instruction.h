@@ -15,6 +15,7 @@ typedef enum {
 } format_t;
 
 class Instruction {
+public:
   const uint8_t     opcode;
   const uint8_t     rd;
   const uint8_t     rs1;
