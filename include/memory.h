@@ -1,7 +1,6 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
-#define N_REGS      32
 #define RAM_SZ      0x10000
 
 uint8_t ram[RAM_SZ];
