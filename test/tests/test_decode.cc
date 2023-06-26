@@ -13,11 +13,8 @@ main(int argc, char **argv)
 
   Instruction instr = decode(instrbits);
   // instr.print();
-  ASSERT((instr.opcode==0b0010011),
-      "Instruction decoding of 0x%x failed\n", instrbits);
-
-
-  puts("Testing decoder finished");
+  TEST((instr.opcode==0b0010011),
+      "Decode 0x%x\n", instrbits);
 
   return 0;
 }
