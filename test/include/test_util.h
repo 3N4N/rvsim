@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include "util.h"
+#include "regfile.h"
 
 #define TIMER_SETUP \
   std::chrono::time_point<std::chrono::high_resolution_clock> __start, __stop;

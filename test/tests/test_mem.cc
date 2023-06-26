@@ -48,7 +48,10 @@ simulate(instr_t instrs[], int n)
     }
 
     if (ctrl.mem_write) {
-      // TODO: write rd2 to ram at alu_out
+      uint32_t addr = alu_out;
+      if (write_ram(addr, rd2, instr.funct3)) {
+        puts("[ERR] write_ram failed");
+      }
     }
 
 
@@ -68,16 +71,17 @@ main(int argc, char **argv)
   puts("This is RISC-V");
 
   ram_start = 0x80000000;
-  memset(ram, 0, RAM_SZ);
 
   // Test LW
   {
     instr_t instrs[] = {
       0x00100313,   // addi x6, x0, 1
       0x01f31313,   // slli x6, x6, 31
-      0x00832383    // lw   x7, 8(x6)
+      0x00832383,   // lw   x7, 8(x6)
     };
 
+    memset(ram, 0, RAM_SZ);
+    memset(regfile, 0, N_REGS * sizeof(reg_t));
     ram[8] = 0x10;
     simulate(instrs, sizeof(instrs)/sizeof(instrs[0]));
 
@@ -89,6 +93,22 @@ main(int argc, char **argv)
     };
 
     TEST(eq_regfile(test_regfile), "%s\n", "LW");
+  }
+
+  // Test SW
+  {
+    instr_t instrs[] = {
+      0x00100313,   // addi x6, x0, 1
+      0x01f31313,   // slli x6, x6, 31
+      0x00732423,   // sw   x7, 8(x6)
+    };
+
+    memset(ram, 0, RAM_SZ);
+    memset(regfile, 0, N_REGS * sizeof(reg_t));
+    regfile[7] = 0x20;
+    simulate(instrs, sizeof(instrs)/sizeof(instrs[0]));
+
+    TEST((ram[0x80000008-ram_start] == 0x20), "%s\n", "SW");
   }
 
   return 0;
