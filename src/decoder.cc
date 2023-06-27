@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 #include <unordered_map>
 #include "decoder.h"
 

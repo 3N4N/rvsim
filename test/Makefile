@@ -17,7 +17,7 @@ $(DIRS):
 bin/%: obj/%.o $(OBJS)
 	$(CXX) $(LIBS) $^ -o $@
 
-obj/%.o : tests/%.cc
+obj/%.o : tests/%.cc $(DIRS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:

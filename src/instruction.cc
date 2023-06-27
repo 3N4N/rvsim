@@ -1,6 +1,7 @@
 #include "instruction.h"
 
-#include <iostream>
+#include <cstdio>
+#include <string>
 #include <unordered_map>
 
 const std::unordered_map<format_t, std::string> _format_t_map {

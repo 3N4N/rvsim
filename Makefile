@@ -13,13 +13,13 @@ all: $(DIRS) $(EXE)
 $(DIRS):
 	mkdir -p $@
 
-$(EXE): $(OBJS)
+$(EXE): $(OBJS) $(DIRS)
 	$(CXX) $(LIBS) $^ -o $@
 
-obj/%.o : src/%.cc include/%.h
+obj/%.o : src/%.cc include/%.h $(DIRS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/%.o : src/%.cc
+obj/%.o : src/%.cc $(DIRS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:

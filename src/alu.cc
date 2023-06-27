@@ -1,7 +1,7 @@
 #include "alu.h"
 
 #include <cstdint>
-#include <iostream>
+#include <cstdio>
 #include <unordered_map>
 
 
