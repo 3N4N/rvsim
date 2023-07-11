@@ -14,7 +14,7 @@ $(DIRS):
 	mkdir -p $@
 
 $(EXE): $(OBJS) $(DIRS)
-	$(CXX) $(LIBS) $^ -o $@
+	$(CXX) $(LIBS) $(OBJS) -o $@
 
 obj/%.o : src/%.cc include/%.h $(DIRS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
