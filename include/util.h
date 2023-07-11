@@ -1,8 +1,5 @@
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#pragma once
 
 #include <cstdint>
 
 using reg_t = uint32_t;
-
-#endif  // _UTIL_H_

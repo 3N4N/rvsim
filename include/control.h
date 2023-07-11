@@ -1,5 +1,4 @@
-#ifndef _CONTROL_H_
-#define _CONTROL_H_
+#pragma once
 
 #include <cstdint>
 
@@ -15,5 +14,3 @@ public:
 
   Control(uint8_t opcode);
 };
-
-#endif  // _CONTROL_H_

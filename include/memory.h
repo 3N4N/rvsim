@@ -1,5 +1,4 @@
-#ifndef _MEMORY_H_
-#define _MEMORY_H_
+#pragma once
 
 #include <cstdint>
 
@@ -16,5 +15,3 @@ int write_ram_u8(uint32_t addr, uint8_t val);
 int write_ram_u16(uint32_t addr, uint16_t val);
 int write_ram_u32(uint32_t addr, uint32_t val);
 int write_ram(uint32_t addr, uint32_t val, uint8_t funct3);
-
-#endif  // _MEMORY_H_

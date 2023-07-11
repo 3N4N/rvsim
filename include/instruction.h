@@ -1,5 +1,4 @@
-#ifndef _INSTRUCTION_H_
-#define _INSTRUCTION_H_
+#pragma once
 
 #include <cstdint>
 
@@ -36,5 +35,3 @@ public:
     {}
   void print();
 };
-
-#endif  // _INSTRUCTION_H_
